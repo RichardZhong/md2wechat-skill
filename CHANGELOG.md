@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1] - 2025-01-12
+
+### Added
+- Auto-download binary from GitHub releases on first run
+- User-friendly error messages with actionable guidance
+- System dependencies declaration in `manifest.json`
+- XDG-compliant cache directory (`~/.cache/claude/`) for binary storage
+- Fallback to local `bin/` directory for development/offline usage
+- Automatic version checking and update prompt when binary is outdated
+
+### Changed
+- Binary naming format now uses hyphens (`md2wechat-linux-amd64`) to match GitHub releases
+- Error messages now show human-readable platform names (e.g., "macOS (Apple Silicon)")
+- Download progress displays concise status information
+
+### Fixed
+- Binary name mismatch between workflow and run.sh that caused download failures
+
+---
+
 ## [1.3.0] - 2025-01-11
 
 ### Added
@@ -103,6 +123,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Date | Description |
 |---------|------|-------------|
+| [1.3.1] | 2025-01-12 | Auto binary download, user-friendly errors, system dependencies |
 | [1.3.0] | 2025-01-11 | Plugin Marketplace support, enhanced installation docs |
 | [1.2.0] | 2025-01-11 | Claude Code plugin support, new API themes |
 | [1.1.0] | 2025-01-11 | YAML theme system, AI themes (autumn-warm, spring-fresh, ocean-calm) |

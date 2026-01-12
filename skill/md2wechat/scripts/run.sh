@@ -88,7 +88,7 @@ detect_platform() {
     case "$os" in
         darwin|linux|msys*|mingw*|cygwin*)
             [[ "$os" == msys* ]] || [[ "$os" == mingw* ]] || [[ "$os" == cygwin* ]] && os="windows"
-            echo "${os}_${arch}"
+            echo "${os}-${arch}"
             ;;
         *)
             error "Unsupported OS: $os" "Supported: macOS, Linux, Windows"
@@ -100,11 +100,11 @@ detect_platform() {
 # Pretty platform name for display
 platform_pretty_name() {
     case "$1" in
-        darwin_amd64)  echo "macOS (Intel)" ;;
-        darwin_arm64)  echo "macOS (Apple Silicon)" ;;
-        linux_amd64)   echo "Linux (x64)" ;;
-        linux_arm64)   echo "Linux (ARM64)" ;;
-        windows_amd64) echo "Windows (x64)" ;;
+        darwin-amd64)  echo "macOS (Intel)" ;;
+        darwin-arm64)  echo "macOS (Apple Silicon)" ;;
+        linux-amd64)   echo "Linux (x64)" ;;
+        linux-arm64)   echo "Linux (ARM64)" ;;
+        windows-amd64) echo "Windows (x64)" ;;
         *) echo "$1" ;;
     esac
 }
@@ -165,8 +165,8 @@ check_download_tool() {
 
 download_binary() {
     local platform=$1 version=$2 binary_path=$3
-    local bin_name="${BINARY_NAME}_${platform}"
-    [[ "$platform" == windows_* ]] && bin_name="${bin_name}.exe"
+    local bin_name="${BINARY_NAME}-${platform}"
+    [[ "$platform" == windows-* ]] && bin_name="${bin_name}.exe"
 
     local download_url="${RELEASE_URL}/v${version}/${bin_name}"
     local temp_file="/tmp/${bin_name}.tmp"
@@ -253,8 +253,8 @@ ensure_binary() {
     local platform version
     platform=$(detect_platform) || return $?
 
-    local cached_binary="${BIN_DIR}/${BINARY_NAME}_${platform}"
-    [[ "$platform" == windows_* ]] && cached_binary="${cached_binary}.exe"
+    local cached_binary="${BIN_DIR}/${BINARY_NAME}-${platform}"
+    [[ "$platform" == windows-* ]] && cached_binary="${cached_binary}.exe"
 
     # Check cached binary (fast path - silent)
     if [[ -x "$cached_binary" ]]; then
@@ -269,8 +269,8 @@ ensure_binary() {
     fi
 
     # Try local bin directory (development/offline fallback)
-    local local_binary="${SCRIPT_DIR}/bin/${BINARY_NAME}_${platform}"
-    [[ "$platform" == windows_* ]] && local_binary="${local_binary}.exe"
+    local local_binary="${SCRIPT_DIR}/bin/${BINARY_NAME}-${platform}"
+    [[ "$platform" == windows-* ]] && local_binary="${local_binary}.exe"
 
     if [[ -x "$local_binary" ]]; then
         echo "$local_binary"
