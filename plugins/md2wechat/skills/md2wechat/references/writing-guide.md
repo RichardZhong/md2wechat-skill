@@ -27,6 +27,14 @@ bash skill/md2wechat/scripts/run.sh write --list
 # 指定风格写作
 bash skill/md2wechat/scripts/run.sh write --style dan-koe
 
+# 通过管道输入内容（非交互式）
+echo "你的想法或内容" | bash skill/md2wechat/scripts/run.sh write --style dan-koe
+
+# 指定标题写作
+bash skill/md2wechat/scripts/run.sh write --style dan-koe --title "文章标题" <<EOF
+你的内容
+EOF
+
 # 只生成封面提示词
 bash skill/md2wechat/scripts/run.sh write --style dan-koe --cover-only
 
@@ -60,7 +68,7 @@ bash skill/md2wechat/scripts/run.sh write --style dan-koe --cover
 
 ## 使用场景
 
-### 场景 1：从零开始写文章
+### 场景 1：从零开始写文章（交互式）
 
 **输入**：一个想法或观点
 
@@ -79,13 +87,31 @@ bash skill/md2wechat/scripts/run.sh write
 - 精彩的金句
 - 可选的封面提示词
 
-### 场景 2：润色现有文章
+### 场景 2：从零开始写文章（非交互式）
+
+**输入**：通过管道传递内容
+
+```bash
+echo "我觉得自律是个伪命题，大多数人坚持不下来是因为内心深处并不真正想要那个结果" | \
+bash skill/md2wechat/scripts/run.sh write --style dan-koe
+```
+
+或使用 heredoc：
+
+```bash
+bash skill/md2wechat/scripts/run.sh write --style dan-koe --title "自律是个谎言" <<EOF
+我觉得自律是个伪命题。
+大多数人坚持不下来是因为内心深处并不真正想要那个结果。
+EOF
+```
+
+### 场景 3：润色现有文章
 
 ```bash
 bash skill/md2wechat/scripts/run.sh write --style dan-koe --input-type fragment article.md
 ```
 
-### 场景 3：只生成封面
+### 场景 4：只生成封面
 
 ```bash
 bash skill/md2wechat/scripts/run.sh write --style dan-koe --cover-only

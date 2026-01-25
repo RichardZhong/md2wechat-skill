@@ -3,6 +3,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"strings"
 
@@ -36,7 +37,7 @@ Examples:
   # Write with AI trace removal
   md2wechat write --style dan-koe --humanize
   md2wechat write --style dan-koe --humanize --humanize-intensity aggressive`,
-	Args:  cobra.MaximumNArgs(1),
+	Args: cobra.MaximumNArgs(1),
 	PreRunE: func(cmd *cobra.Command, args []string) error {
 		return initConfig()
 	},
@@ -49,17 +50,17 @@ Examples:
 
 // write 命令参数
 var (
-	writeStyle        string
-	writeInputType    string
-	writeArticleType  string
-	writeLength       string
-	writeTitle        string
-	writeOutput       string
-	writeCover        bool
-	writeCoverOnly    bool
-	writeListStyles   bool
-	writeStyleDetail  bool
-	writeHumanize     bool
+	writeStyle             string
+	writeInputType         string
+	writeArticleType       string
+	writeLength            string
+	writeTitle             string
+	writeOutput            string
+	writeCover             bool
+	writeCoverOnly         bool
+	writeListStyles        bool
+	writeStyleDetail       bool
+	writeHumanize          bool
 	writeHumanizeIntensity string
 )
 
@@ -101,6 +102,12 @@ func runWrite(cmd *cobra.Command, args []string) error {
 		// 如果没有明确指定输入类型，默认为 fragment
 		if writeInputType == "idea" {
 			writeInputType = "fragment"
+		}
+	} else {
+		// 检查 stdin 是否有输入
+		stdinContent, err := readStdin()
+		if err == nil && stdinContent != "" {
+			input = stdinContent
 		}
 	}
 
@@ -197,10 +204,10 @@ func runInteractiveWrite() error {
 				IncludeScore:  true,
 			}
 			output["humanizer"] = map[string]interface{}{
-				"enabled":  true,
-				"intensity": writeHumanizeIntensity,
+				"enabled":         true,
+				"intensity":       writeHumanizeIntensity,
 				"prompt_template": h.BuildAIRequestForAI(hReq),
-				"instruction": "先生成文章，然后使用 humanizer prompt 去除 AI 痕迹",
+				"instruction":     "先生成文章，然后使用 humanizer prompt 去除 AI 痕迹",
 			}
 		}
 
@@ -271,16 +278,16 @@ func executeWrite(input string) error {
 			hReq := &humanizer.HumanizeRequest{
 				// Content 将在 AI 生成后填充
 				Intensity:     humanizer.ParseIntensity(writeHumanizeIntensity),
-				PreserveStyle: true,  // 风格优先
+				PreserveStyle: true, // 风格优先
 				OriginalStyle: result.Style.EnglishName,
 				ShowChanges:   true,
 				IncludeScore:  true,
 			}
 			output["humanizer"] = map[string]interface{}{
-				"enabled":  true,
-				"intensity": writeHumanizeIntensity,
+				"enabled":         true,
+				"intensity":       writeHumanizeIntensity,
 				"prompt_template": h.BuildAIRequestForAI(hReq),
-				"instruction": "先生成文章，然后使用 humanizer prompt 去除 AI 痕迹",
+				"instruction":     "先生成文章，然后使用 humanizer prompt 去除 AI 痕迹",
 			}
 		}
 
@@ -378,4 +385,25 @@ func readMultiline() string {
 		lines = append(lines, line)
 	}
 	return strings.Join(lines, "\n")
+}
+
+// readStdin 读取标准输入，如果 stdin 为空或来自终端则返回空字符串
+func readStdin() (string, error) {
+	stat, err := os.Stdin.Stat()
+	if err != nil {
+		return "", err
+	}
+
+	// 检查 stdin 是否来自管道或重定向（而非终端）
+	if (stat.Mode() & os.ModeCharDevice) != 0 {
+		return "", nil // 来自终端，无管道输入
+	}
+
+	// 读取所有 stdin 内容
+	content, err := io.ReadAll(os.Stdin)
+	if err != nil {
+		return "", err
+	}
+
+	return strings.TrimSpace(string(content)), nil
 }

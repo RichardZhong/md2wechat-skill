@@ -659,7 +659,43 @@ md2wechat generate_image --size 2560x1440 "prompt"
 
 > 💡 **公众号封面图建议**：使用 16:9 横向比例（2560x1440）作为文章封面，在微信 feed 流和文章列表中显示效果更好。方形图片（2048x2048）在预览时会被裁剪。
 
-#### AI 图片生成
+#### AI 图片生成服务配置 🆕
+
+支持多种 AI 图片生成服务：
+
+| 服务 | 配置值 | 说明 | 获取方式 |
+|------|--------|------|----------|
+| **ModelScope** | `modelscope` 或 `ms` | 阿里 ModelScope，免费额度 | [modelscope.cn](https://modelscope.cn/my/myaccesstoken) |
+| **TuZi** | `tuzi` | 国产 API，稳定快速 | [tu-zi.com](https://api.tu-zi.com) |
+| **OpenAI** | `openai` | 官方 OpenAI | [platform.openai.com](https://platform.openai.com) |
+
+**配置方式**（环境变量或配置文件）：
+
+```bash
+# 使用 ModelScope（推荐，有免费额度）
+export IMAGE_PROVIDER=modelscope
+export IMAGE_API_KEY=ms-your-token-here
+export IMAGE_API_BASE=https://api-inference.modelscope.cn
+export IMAGE_MODEL=Tongyi-MAI/Z-Image-Turbo
+```
+
+```yaml
+# config.yaml
+api:
+  image_provider: modelscope
+  image_key: ms-your-token-here
+  image_base_url: https://api-inference.modelscope.cn
+  image_model: Tongyi-MAI/Z-Image-Turbo
+  image_size: 1024x1024
+```
+
+**ModelScope 特点**：
+- ✅ 有免费额度，适合测试
+- ✅ 国内服务，访问稳定
+- ✅ 默认模型 `Tongyi-MAI/Z-Image-Turbo` 生成速度快
+- ⚠️ 使用异步 API（task_id + 轮询），约 10-30 秒完成
+
+#### Markdown 中生成图片
 
 在 Markdown 中使用特殊语法生成图片：
 
@@ -671,7 +707,7 @@ md2wechat generate_image --size 2560x1440 "prompt"
 
 - 支持中文和英文提示词
 - 生成的图片会自动上传到微信素材库
-- 需要配置图片生成服务（详见 [图片服务配置文档](docs/IMAGE_PROVISIONERS.md))
+- 需要配置图片生成服务（详见 [图片服务配置文档](docs/IMAGE_PROVISIONERS.md)）
 
 **在 Claude Code 中使用自然语言：**
 ```
@@ -1098,6 +1134,109 @@ md2wechat write --style dan-koe --humanize
 ```
 </details>
 
+<details>
+<summary><b>Q: 发送草稿时报错 "content size out of limit (errcode=45002)"？</b></summary>
+
+**A:** 这是微信 API 的内容大小限制错误。
+
+**微信草稿 API 限制：**
+- **字符数**：< 20,000 字符（中文算 1 个字符）
+- **大小**：< 1 MB
+
+**解决方案：**
+1. 缩短文章内容
+2. 减少不必要的格式（API 模式的 inline CSS 会增加内容体积）
+3. 拆分为多篇文章发布
+4. 使用更简洁的排版主题
+
+**注意：** API 模式生成的 HTML 包含大量 inline CSS，会使内容体积膨胀约 5-10 倍。长文章建议：
+- 使用更简洁的 Markdown 写作
+- 删除部分图片或使用外部图片链接
+- 手动在微信编辑器中复制粘贴（绕过 API 限制）
+
+**来源：** [微信公众号 API 文档](https://developers.weixin.qq.com/doc/subscription/api/draftbox/draftmanage/api_draft_add.html)
+</details>
+
+<details>
+<summary><b>Q: ModelScope 图片生成需要多久？</b></summary>
+
+**A:** ModelScope 使用异步 API 模式，通常需要 10-30 秒。
+
+**流程：**
+1. 发起请求 → 获取 task_id
+2. 轮询任务状态（每 5 秒一次）
+3. 任务完成 → 返回图片 URL
+
+**超时设置：**
+- 默认最大轮询时间：120 秒
+- 超时后会返回错误，建议：
+  - 简化提示词
+  - 重试一次
+  - 检查 ModelScope 服务状态
+</details>
+
+<details>
+<summary><b>Q: 如何配置 ModelScope 图片生成？</b></summary>
+
+**A:** ModelScope 是推荐的图片生成服务，有免费额度。
+
+**配置步骤：**
+
+1. **获取 API Key**
+   - 访问 [modelscope.cn](https://modelscope.cn/my/myaccesstoken)
+   - 登录后创建 Access Token
+   - 格式类似：`ms-your-token-here`
+
+2. **配置环境变量**
+   ```bash
+   export IMAGE_PROVIDER=modelscope
+   export IMAGE_API_KEY=ms-your-token-here
+   export IMAGE_API_BASE=https://api-inference.modelscope.cn
+   export IMAGE_MODEL=Tongyi-MAI/Z-Image-Turbo
+   ```
+
+3. **或在配置文件中设置**
+   ```yaml
+   # ~/.config/md2wechat/config.yaml
+   api:
+     image_provider: modelscope
+     image_key: ms-your-token-here
+     image_base_url: https://api-inference.modelscope.cn
+     image_model: Tongyi-MAI/Z-Image-Turbo
+     image_size: 1024x1024
+   ```
+
+4. **测试**
+   ```bash
+   md2wechat generate_image "A golden cat"
+   ```
+</details>
+
+<details>
+<summary><b>Q: write 命令支持管道输入吗？</b></summary>
+
+**A:** 支持！可以通过管道或 heredoc 传递内容。
+
+**使用方式：**
+
+```bash
+# 管道输入
+echo "你的想法或内容" | md2wechat write --style dan-koe
+
+# heredoc 输入（适合多行内容）
+md2wechat write --style dan-koe --title "文章标题" <<EOF
+第一段内容
+第二段内容
+更多观点...
+EOF
+```
+
+**适用场景：**
+- 脚本自动化
+- 从其他命令输出传递内容
+- 在 CI/CD 流程中使用
+</details>
+
 ---
 
 ## 📚 更多文档
@@ -1106,9 +1245,10 @@ md2wechat write --style dan-koe --humanize
 |------|------|
 | [新手入门指南](QUICKSTART.md) | **强烈推荐！** 详细的图文教程 |
 | [完整使用说明](docs/USAGE.md) | 所有命令和选项 |
+| [图片服务配置](docs/IMAGE_PROVISIONERS.md) 🆕 | AI 图片生成服务完整配置指南 |
 | [写作功能指南](writers/README.md) | 如何使用和自定义写作风格 |
 | [写作功能问答](docs/WRITING_FAQ.md) | 写作小白完整指南 |
-| [AI 去痕指南](skill/md2wechat/references/humanizer.md) 🆕 | AI 写作去痕完整指南 |
+| [AI 去痕指南](skill/md2wechat/references/humanizer.md) | AI 写作去痕完整指南 |
 | [常见问题](docs/FAQ.md) | 20+ 常见问题解答 |
 | [故障排查](docs/TROUBLESHOOTING.md) | 遇到问题看这里 |
 

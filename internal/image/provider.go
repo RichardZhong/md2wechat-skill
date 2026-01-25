@@ -28,11 +28,11 @@ type GenerateResult struct {
 
 // GenerateError 图片生成错误
 type GenerateError struct {
-	Provider  string // 提供者名称
-	Code      string // 错误码
-	Message   string // 用户友好的错误信息
-	Hint      string // 解决提示
-	Original  error  // 原始错误
+	Provider string // 提供者名称
+	Code     string // 错误码
+	Message  string // 用户友好的错误信息
+	Hint     string // 解决提示
+	Original error  // 原始错误
 }
 
 func (e *GenerateError) Error() string {
@@ -55,6 +55,11 @@ func NewProvider(cfg *config.Config) (Provider, error) {
 			return nil, err
 		}
 		return NewTuZiProvider(cfg)
+	case "modelscope", "ms":
+		if err := validateModelScopeConfig(cfg); err != nil {
+			return nil, err
+		}
+		return NewModelScopeProvider(cfg)
 	case "openai", "":
 		if err := validateOpenAIConfig(cfg); err != nil {
 			return nil, err
@@ -64,7 +69,7 @@ func NewProvider(cfg *config.Config) (Provider, error) {
 		return nil, &config.ConfigError{
 			Field:   "ImageProvider",
 			Message: fmt.Sprintf("未知的图片服务提供者: %s", cfg.ImageProvider),
-			Hint:    "支持的提供者: openai, tuzi",
+			Hint:    "支持的提供者: openai, tuzi, modelscope (或 ms)",
 		}
 	}
 }
@@ -104,5 +109,18 @@ func validateTuZiConfig(cfg *config.Config) error {
 			Hint:    "在配置文件中设置 api.image_base_url，通常为 https://api.tu-zi.com/v1",
 		}
 	}
+	return nil
+}
+
+// validateModelScopeConfig 验证 ModelScope 配置
+func validateModelScopeConfig(cfg *config.Config) error {
+	if cfg.ImageAPIKey == "" {
+		return &config.ConfigError{
+			Field:   "ImageAPIKey",
+			Message: "使用 ModelScope 图片服务需要配置 API Key",
+			Hint:    "在配置文件中设置 api.image_key 或环境变量 IMAGE_API_KEY，前往 https://modelscope.cn/my/myaccesstoken 获取",
+		}
+	}
+	// ModelScope API Base 有默认值，可以为空
 	return nil
 }

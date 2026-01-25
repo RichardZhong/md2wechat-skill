@@ -5,6 +5,66 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.0] - 2025-01-25
+
+### Added
+- **ModelScope Image Provider**: Native integration with Alibaba ModelScope image generation service
+  - Async API support with task-based polling mechanism (task_id + status check)
+  - Configurable polling interval (default 5s) and max polling time (default 120s)
+  - Model: `Tongyi-MAI/Z-Image-Turbo` with support for custom image sizes
+  - Free tier available for testing
+- **Write Command Stdin Support**: Pipe input support for non-interactive usage
+  - `echo "content" | md2wechat write --style dan-koe`
+  - Heredoc support for multi-line content input
+- **Image Size Parameter**: ModelScope provider supports separate `width` and `height` parameters
+  - Default size: 1024x1024
+  - Configurable via `IMAGE_SIZE` or `image_size` in config
+- **Documentation Updates**:
+  - ModelScope configuration guide in README.md
+  - New FAQ entries for content size limit, ModelScope setup, and stdin usage
+  - Updated `docs/IMAGE_PROVISIONERS.md` with ModelScope documentation
+
+### Changed
+- `internal/image/provider.go`: Added ModelScope (`modelscope`, `ms`) provider to factory
+- `internal/image/provider.go`: Updated error hints to include ModelScope in supported providers list
+- `cmd/md2wechat/write.go`: Added `readStdin()` function for pipe/redirection detection
+- `cmd/md2wechat/write.go`: Added `io` import for stdin reading functionality
+- `internal/wechat/service.go`: Fixed `maskMediaID()` to handle empty strings safely
+- `skill/md2wechat/SKILL.md`: Added stdin/heredoc usage examples
+- `skill/md2wechat/references/writing-guide.md`: Added non-interactive input methods section
+
+### Technical Details
+- **New Files**:
+  - `internal/image/modelscope.go` - ModelScope provider implementation (372 lines)
+    - `ModelScopeProvider` struct with async polling support
+    - `parseSize()` function for WIDTHxHEIGHT format parsing
+    - `createTask()` for async job creation
+    - `pollTaskStatus()` for status polling with timeout
+    - `getTaskStatus()` for task status retrieval
+    - `handleErrorResponse()` for comprehensive error handling
+  - `internal/image/modelscope_test.go` - Unit tests (9 test cases, all passing)
+
+### Configuration
+```yaml
+# ModelScope Configuration Example
+api:
+  image_provider: modelscope
+  image_key: ms-your-token-here
+  image_base_url: https://api-inference.modelscope.cn
+  image_model: Tongyi-MAI/Z-Image-Turbo
+  image_size: 1024x1024
+```
+
+### Migration Guide
+No migration required. ModelScope is a new optional image provider. To use it:
+
+1. Get API Key from [modelscope.cn](https://modelscope.cn/my/myaccesstoken)
+2. Set `IMAGE_PROVIDER=modelscope`
+3. Set `IMAGE_API_KEY=ms-your-token-here`
+4. Run: `md2wechat generate_image "A golden cat"`
+
+---
+
 ## [1.6.0] - 2025-01-19
 
 ### Added
@@ -261,6 +321,7 @@ No migration required. The write command is a new feature and doesn't affect exi
 
 | Version | Date | Description |
 |---------|------|-------------|
+| [1.7.0] | 2025-01-25 | ModelScope image provider, write command stdin support |
 | [1.6.0] | 2025-01-19 | AI writing trace removal (Humanizer), write + humanize integration |
 | [1.5.0] | 2025-01-17 | Writer style assistant, Dan Koe style, image size control |
 | [1.4.0] | 2025-01-14 | TuZi image provider, natural language image generation |

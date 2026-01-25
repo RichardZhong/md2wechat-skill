@@ -15,8 +15,8 @@ import (
 	"github.com/geekjourneyx/md2wechat-skill/internal/config"
 	"github.com/silenceper/wechat/v2"
 	wechatcache "github.com/silenceper/wechat/v2/cache"
-	wechatconfig "github.com/silenceper/wechat/v2/officialaccount/config"
 	"github.com/silenceper/wechat/v2/officialaccount"
+	wechatconfig "github.com/silenceper/wechat/v2/officialaccount/config"
 	"github.com/silenceper/wechat/v2/officialaccount/draft"
 	"github.com/silenceper/wechat/v2/officialaccount/material"
 	"go.uber.org/zap"
@@ -152,7 +152,7 @@ func (s *Service) GetAccessToken() (*AccessTokenResult, error) {
 
 // maskMediaID 遮蔽 media_id 用于日志
 func maskMediaID(id string) string {
-	if len(id) < 8 {
+	if id == "" || len(id) < 8 {
 		return "***"
 	}
 	return id[:4] + "***" + id[len(id)-4:]
