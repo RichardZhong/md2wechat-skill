@@ -8,6 +8,7 @@
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![GitHub Release](https://img.shields.io/badge/download-latest-green)](https://github.com/geekjourneyx/md2wechat-skill/releases)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Skill-purple)](#-claude-code-集成)
+[![OpenClaw](https://img.shields.io/badge/OpenClaw-Compatible-00b0aa)](#-openclaw-支持)
 [![zread](https://img.shields.io/badge/Ask_Zread-_.svg?style=flat&color=00b0aa&labelColor=000000&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQuOTYxNTYgMS42MDAxSDIuMjQxNTZDMS44ODgxIDEuNjAwMSAxLjYwMTU2IDEuODg2NjQgMS42MDE1NiAyLjI0MDFWNC45NjAxQzEuNjAxNTYgNS4zMTM1NiAxLjg4ODEgNS42MDAxIDIuMjQxNTYgNS42MDAxSDQuOTYxNTZDNS4zMTUwMiA1LjYwMDEgNS42MDE1NiA1LjMxMzU2IDUuNjAxNTYgNC45NjAxVjIuMjQwMUM1LjYwMTU2IDEuODg2NjQgNS4zMTUwMiAxLjYwMDEgNC45NjE1NiAxLjYwMDFaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00Ljk2MTU2IDEwLjM5OTlIMi4yNDE1NkMxLjg4ODEgMTAuMzk5OSAxLjYwMTU2IDEwLjY4NjQgMS42MDE1NiAxMS4wMzk5VjEzLjc1OTlDMS42MDE1NiAxNC4xMTM0IDEuODg4MSAxNC4zOTk5IDIuMjQxNTYgMTQuMzk5OUg0Ljk2MTU2QzUuMzE1MDIgMTQuMzk5OSA1LjYwMTU2IDE0LjExMzQgNS42MDE1NiAxMy43NTk5VjExLjAzOTlDNS42MDE1NiAxMC42ODY0IDUuMzE1MDIgMTAuMzk5OSA0Ljk2MTU2IDEwLjM5OTlaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik0xMy43NTg0IDEuNjAwMUgxMS4wMzg0QzEwLjY4NSAxLjYwMDEgMTAuMzk4NCAxLjg4NjY0IDEwLjM5ODQgMi4yNDAxVjQuOTYwMUMxMC4zOTg0IDUuMzEzNTYgMTAuNjg1IDUuNjAwMSAxMS4wMzg0IDUuNjAwMUgxMy43NTg0QzE0LjExMTkgNS42MDAxIDE0LjM5ODQgNS4zMTM1NiAxNC4zOTg0IDQuOTYwMVYyLjI0MDFDMTQuMzk4NCAxLjg4NjY0IDE0LjExMTkgMS42MDAxIDEzLjc1ODQgMS42MDAxWiIgZmlsbD0iI2ZmZiIvPgo8cGF0aCBkPSJNNCAxMkwxMiA0TDQgMTJaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00IDEyTDEyIDQiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K&logoColor=ffffff)](https://zread.ai/geekjourneyx/md2wechat-skill)
 
 ---
@@ -21,7 +22,7 @@
 
 ---
 
-[快速开始](#-5分钟快速上手) • [Claude Code](#-claude-code-集成) • [功能介绍](#-核心功能) • [使用说明](#-使用方法) • [常见问题](#-常见问题)
+[快速开始](#-5分钟快速上手) • [Claude Code](#-claude-code-集成) • [OpenClaw](#-openclaw-支持) • [功能介绍](#-核心功能) • [使用说明](#-使用方法) • [常见问题](#-常见问题)
 
 ---
 
@@ -896,13 +897,13 @@ cd md2wechat-skill
 
 ```bash
 # 复制到全局技能目录
-cp -r skill/md2wechat ~/.claude/skills/
+cp -r skills/md2wechat ~/.claude/skills/
 ```
 
 #### 方式四：创建符号链接
 
 ```bash
-ln -s /path/to/md2wechat-skill/skill/md2wechat ~/.claude/skills/md2wechat
+ln -s /path/to/md2wechat-skill/skills/md2wechat ~/.claude/skills/md2wechat
 ```
 
 ### 项目结构
@@ -910,8 +911,8 @@ ln -s /path/to/md2wechat-skill/skill/md2wechat ~/.claude/skills/md2wechat
 ```
 md2wechat-skill/
 ├── .claude-plugin/        # 插件清单
-│   └── plugin.json
-├── skill/                 # Claude Code Skill
+│   └── marketplace.json   # Plugin Marketplace 配置
+├── skills/                # 技能目录（Claude Code / OpenClaw 通用）
 │   └── md2wechat/
 │       ├── SKILL.md       # 技能定义
 │       ├── references/    # 参考文档
@@ -920,11 +921,85 @@ md2wechat-skill/
 │       │   ├── image-syntax.md # 图片语法
 │       │   └── wechat-api.md  # API 参考
 │       └── scripts/       # 执行脚本
+│           └── run.sh     # 智能二进制下载器
+├── scripts/               # 安装脚本
+│   ├── install.sh         # CLI 安装脚本
+│   └── install-openclaw.sh # OpenClaw 安装脚本
 └── themes/                # AI 主题配置
     ├── autumn-warm.yaml
     ├── spring-fresh.yaml
     └── ocean-calm.yaml
 ```
+
+---
+
+## 🦞 OpenClaw 支持
+
+md2wechat 现已支持 [OpenClaw](https://openclaw.ai/) 平台！
+
+### 什么是 OpenClaw？
+
+[OpenClaw](https://openclaw.ai/) 是一个开源的 AI Agent 平台，**在你的设备上运行**，通过你已经在用的聊天应用（WhatsApp、Telegram、Discord、Slack）来操控 AI 助手。
+
+> **The AI that actually does things.** — 你的助手，你的设备，你的规则。
+
+### 安装方式
+
+#### 方式一：ClawHub 安装（推荐）
+
+```bash
+# 安装 clawhub CLI（如果还没有）
+npm install -g clawhub
+clawhub login
+
+# 安装 md2wechat 技能
+clawhub install md2wechat
+```
+
+#### 方式二：一键脚本安装
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/geekjourneyx/md2wechat-skill/main/scripts/install-openclaw.sh | bash
+```
+
+#### 方式三：手动安装
+
+```bash
+git clone https://github.com/geekjourneyx/md2wechat-skill.git
+cp -r md2wechat-skill/skills/md2wechat ~/.openclaw/skills/
+```
+
+### 配置
+
+编辑 `~/.openclaw/openclaw.json`：
+
+```json
+{
+  "skills": {
+    "entries": {
+      "md2wechat": {
+        "enabled": true,
+        "env": {
+          "WECHAT_APPID": "你的AppID",
+          "WECHAT_SECRET": "你的Secret"
+        }
+      }
+    }
+  }
+}
+```
+
+### Claude Code vs OpenClaw
+
+| 方面 | Claude Code | OpenClaw |
+|------|-------------|----------|
+| **定位** | 终端 AI 编程助手 | 聊天应用 AI 助手 |
+| **技能目录** | `~/.claude/skills/` | `~/.openclaw/skills/` |
+| **安装方式** | `/plugin` 命令 | `clawhub` CLI |
+| **配置方式** | 环境变量 | `openclaw.json` |
+| **LLM 支持** | Claude | Claude、GPT、DeepSeek 等 |
+
+> 📖 **详细文档**：[OpenClaw 安装指南](docs/OPENCLAW.md)
 
 ---
 
@@ -1245,10 +1320,11 @@ EOF
 |------|------|
 | [新手入门指南](QUICKSTART.md) | **强烈推荐！** 详细的图文教程 |
 | [完整使用说明](docs/USAGE.md) | 所有命令和选项 |
-| [图片服务配置](docs/IMAGE_PROVISIONERS.md) 🆕 | AI 图片生成服务完整配置指南 |
+| [OpenClaw 安装指南](docs/OPENCLAW.md) | OpenClaw 平台安装配置指南 |
+| [图片服务配置](docs/IMAGE_PROVISIONERS.md) | AI 图片生成服务完整配置指南 |
 | [写作功能指南](writers/README.md) | 如何使用和自定义写作风格 |
 | [写作功能问答](docs/WRITING_FAQ.md) | 写作小白完整指南 |
-| [AI 去痕指南](skill/md2wechat/references/humanizer.md) | AI 写作去痕完整指南 |
+| [AI 去痕指南](skills/md2wechat/references/humanizer.md) | AI 写作去痕完整指南 |
 | [常见问题](docs/FAQ.md) | 20+ 常见问题解答 |
 | [故障排查](docs/TROUBLESHOOTING.md) | 遇到问题看这里 |
 

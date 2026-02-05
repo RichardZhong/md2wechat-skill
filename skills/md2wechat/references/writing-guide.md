@@ -19,27 +19,27 @@
 
 ```bash
 # 交互式写作（最简单）
-bash skill/md2wechat/scripts/run.sh write
+bash skills/md2wechat/scripts/run.sh write
 
 # 查看所有可用风格
-bash skill/md2wechat/scripts/run.sh write --list
+bash skills/md2wechat/scripts/run.sh write --list
 
 # 指定风格写作
-bash skill/md2wechat/scripts/run.sh write --style dan-koe
+bash skills/md2wechat/scripts/run.sh write --style dan-koe
 
 # 通过管道输入内容（非交互式）
-echo "你的想法或内容" | bash skill/md2wechat/scripts/run.sh write --style dan-koe
+echo "你的想法或内容" | bash skills/md2wechat/scripts/run.sh write --style dan-koe
 
 # 指定标题写作
-bash skill/md2wechat/scripts/run.sh write --style dan-koe --title "文章标题" <<EOF
+bash skills/md2wechat/scripts/run.sh write --style dan-koe --title "文章标题" <<EOF
 你的内容
 EOF
 
 # 只生成封面提示词
-bash skill/md2wechat/scripts/run.sh write --style dan-koe --cover-only
+bash skills/md2wechat/scripts/run.sh write --style dan-koe --cover-only
 
 # 同时生成文章和封面
-bash skill/md2wechat/scripts/run.sh write --style dan-koe --cover
+bash skills/md2wechat/scripts/run.sh write --style dan-koe --cover
 ```
 
 ### 输入类型
@@ -73,7 +73,7 @@ bash skill/md2wechat/scripts/run.sh write --style dan-koe --cover
 **输入**：一个想法或观点
 
 ```bash
-bash skill/md2wechat/scripts/run.sh write
+bash skills/md2wechat/scripts/run.sh write
 ```
 
 然后输入：
@@ -93,13 +93,13 @@ bash skill/md2wechat/scripts/run.sh write
 
 ```bash
 echo "我觉得自律是个伪命题，大多数人坚持不下来是因为内心深处并不真正想要那个结果" | \
-bash skill/md2wechat/scripts/run.sh write --style dan-koe
+bash skills/md2wechat/scripts/run.sh write --style dan-koe
 ```
 
 或使用 heredoc：
 
 ```bash
-bash skill/md2wechat/scripts/run.sh write --style dan-koe --title "自律是个谎言" <<EOF
+bash skills/md2wechat/scripts/run.sh write --style dan-koe --title "自律是个谎言" <<EOF
 我觉得自律是个伪命题。
 大多数人坚持不下来是因为内心深处并不真正想要那个结果。
 EOF
@@ -108,13 +108,13 @@ EOF
 ### 场景 3：润色现有文章
 
 ```bash
-bash skill/md2wechat/scripts/run.sh write --style dan-koe --input-type fragment article.md
+bash skills/md2wechat/scripts/run.sh write --style dan-koe --input-type fragment article.md
 ```
 
 ### 场景 4：只生成封面
 
 ```bash
-bash skill/md2wechat/scripts/run.sh write --style dan-koe --cover-only
+bash skills/md2wechat/scripts/run.sh write --style dan-koe --cover-only
 ```
 
 输入文章内容后，获得：
@@ -249,7 +249,7 @@ Claude 会自动调用 `write` 命令并处理结果。
 
 ```bash
 # 生成 16:9 封面图（推荐）
-bash skill/md2wechat/scripts/run.sh generate_image --size 2560x1440 "封面提示词"
+bash skills/md2wechat/scripts/run.sh generate_image --size 2560x1440 "封面提示词"
 ```
 
 ---
@@ -265,7 +265,7 @@ A: 不需要。写作功能专为小白设计，只需提供一个想法即可�
 A: 生成的是 Markdown 格式，需要用 `convert` 命令转换为微信格式：
 
 ```bash
-bash skill/md2wechat/scripts/run.sh convert article.md --preview
+bash skills/md2wechat/scripts/run.sh convert article.md --preview
 ```
 
 **Q: 可以修改生成的内容吗？**

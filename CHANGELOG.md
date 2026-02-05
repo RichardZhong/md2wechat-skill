@@ -5,6 +5,58 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.0] - 2025-02-05
+
+### Added
+- **OpenClaw Platform Support**: Full compatibility with OpenClaw AI Agent platform
+  - ClawHub installation: `clawhub install md2wechat`
+  - One-click install script: `scripts/install-openclaw.sh`
+  - OpenClaw configuration guide: `docs/OPENCLAW.md`
+  - SKILL.md metadata for OpenClaw compatibility
+- **OpenClaw Badge**: Added to README.md header
+
+### Changed
+- **Directory Structure Simplification**:
+  - Renamed `skill/` to `skills/` (unified naming)
+  - Removed redundant `plugins/` directory
+  - Removed `plugin.json` (keeping only `marketplace.json`)
+  - Removed `manifest.json` (version hardcoded in `run.sh`)
+- **Binary Provisioner Refactoring** (`run.sh`):
+  - Reduced from 375 lines to 154 lines (-59%)
+  - Changed cache directory from `~/.cache/claude/` to `~/.cache/md2wechat/`
+  - Simplified version management (plain text file instead of JSON)
+  - Removed invalid jsDelivr mirror (binaries are in GitHub Releases, not in repo)
+  - Improved error messages with cleaner formatting
+- **Documentation Updates**:
+  - Updated README.md with OpenClaw support section
+  - Fixed project structure diagram
+  - Added OpenClaw vs Claude Code comparison table
+
+### Removed
+- `plugins/` directory (redundant copy of skills)
+- `.claude-plugin/plugin.json` (replaced by marketplace.json)
+- `skill/md2wechat/manifest.json` (version now in run.sh)
+- `scripts/sync.sh` (no longer needed without plugins/)
+
+### Technical Details
+- **New Files**:
+  - `docs/OPENCLAW.md` - OpenClaw installation guide
+  - `scripts/install-openclaw.sh` - OpenClaw installer script
+- **Modified Files**:
+  - `.claude-plugin/marketplace.json` - source changed to `"."`
+  - `skills/md2wechat/SKILL.md` - added `metadata.openclaw` for compatibility
+  - `skills/md2wechat/scripts/run.sh` - complete refactoring
+
+### Migration Guide
+No migration required for existing Claude Code users. The skill continues to work the same way.
+
+For OpenClaw users:
+1. Install via ClawHub: `clawhub install md2wechat`
+2. Configure in `~/.openclaw/openclaw.json`
+3. See `docs/OPENCLAW.md` for detailed instructions
+
+---
+
 ## [1.7.0] - 2025-01-25
 
 ### Added
@@ -30,8 +82,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `cmd/md2wechat/write.go`: Added `readStdin()` function for pipe/redirection detection
 - `cmd/md2wechat/write.go`: Added `io` import for stdin reading functionality
 - `internal/wechat/service.go`: Fixed `maskMediaID()` to handle empty strings safely
-- `skill/md2wechat/SKILL.md`: Added stdin/heredoc usage examples
-- `skill/md2wechat/references/writing-guide.md`: Added non-interactive input methods section
+- `skills/md2wechat/SKILL.md`: Added stdin/heredoc usage examples
+- `skills/md2wechat/references/writing-guide.md`: Added non-interactive input methods section
 
 ### Technical Details
 - **New Files**:
@@ -102,7 +154,7 @@ No migration required. ModelScope is a new optional image provider. To use it:
     - `prompt.go` - Humanizer-zh prompt builder with 24 pattern types
     - `humanizer.go` - Core processing logic and response parsing
   - `cmd/md2wechat/humanize.go` - Humanize command implementation
-  - `skill/md2wechat/references/humanizer.md` - Humanizer documentation
+  - `skills/md2wechat/references/humanizer.md` - Humanizer documentation
 
 ### Breaking Changes
 - None
@@ -156,7 +208,7 @@ No migration required. The humanize command is a new feature and doesn't affect 
   - `writers/dan-koe.yaml` - Dan Koe style configuration
   - `writers/README.md` - Custom style guide
   - `docs/WRITING_FAQ.md` - Writing functionality FAQ
-  - `skill/md2wechat/references/writing-guide.md` - Writing command reference
+  - `skills/md2wechat/references/writing-guide.md` - Writing command reference
 
 ### Breaking Changes
 - None
@@ -252,7 +304,7 @@ No migration required. The write command is a new feature and doesn't affect exi
 
 ### Added
 - Claude Code Skill support with `.claude-plugin/plugin.json`
-- Claude Code Skill in `skill/md2wechat/` directory for distribution
+- Claude Code Skill in `skills/md2wechat/` directory for distribution
 - New API themes: `bytedance`, `apple`, `sports`, `chinese`, `cyber`
 - Comprehensive troubleshooting guide in SKILL.md
 - API theme selection section in README.md
@@ -321,6 +373,7 @@ No migration required. The write command is a new feature and doesn't affect exi
 
 | Version | Date | Description |
 |---------|------|-------------|
+| [1.8.0] | 2025-02-05 | OpenClaw support, directory simplification, run.sh refactoring |
 | [1.7.0] | 2025-01-25 | ModelScope image provider, write command stdin support |
 | [1.6.0] | 2025-01-19 | AI writing trace removal (Humanizer), write + humanize integration |
 | [1.5.0] | 2025-01-17 | Writer style assistant, Dan Koe style, image size control |
@@ -351,7 +404,7 @@ md2wechat convert article.md --theme cyber
 **Claude Code Skill Integration:**
 ```bash
 # Install as Claude Code Skill
-cp -r skill/md2wechat ~/.claude/skills/
+cp -r skills/md2wechat ~/.claude/skills/
 ```
 
 ### From v1.0.0 to v1.1.0

@@ -1,6 +1,7 @@
 ---
 name: md2wechat
-description: Convert Markdown articles to WeChat Official Account formatted HTML with styled CSS and optionally upload to draft box. Supports API mode for quick conversion and AI mode for beautiful themed layouts (autumn-warm, spring-fresh, ocean-calm). Also supports assisted writing with customizable creator styles (default: Dan Koe - profound, sharp, grounded) and AI trace removal (humanizer) to make AI-generated text sound more natural. Users can add custom styles in writers/ directory. Use when user wants to write articles, convert markdown to WeChat format, remove AI writing traces, or publish to WeChat Official Account.
+description: Convert Markdown to WeChat Official Account HTML. Supports API mode (fast) and AI mode (themed). Features writer style assistant, AI trace removal (humanizer), and draft upload.
+metadata: {"openclaw": {"emoji": "📝", "homepage": "https://github.com/geekjourneyx/md2wechat-skill", "requires": {"anyBins": ["curl", "wget"]}, "primaryEnv": "IMAGE_API_KEY"}}
 ---
 
 # MD to WeChat
@@ -14,13 +15,13 @@ Converts Markdown articles to WeChat Official Account formatted HTML with inline
 
 ```bash
 # Preview HTML (API mode, fast)
-bash skill/md2wechat/scripts/run.sh convert article.md --preview
+bash skills/md2wechat/scripts/run.sh convert article.md --preview
 
 # Preview HTML (AI mode, themed)
-bash skill/md2wechat/scripts/run.sh convert article.md --mode ai --theme autumn-warm --preview
+bash skills/md2wechat/scripts/run.sh convert article.md --mode ai --theme autumn-warm --preview
 
 # Upload to WeChat draft box
-bash skill/md2wechat/scripts/run.sh convert article.md --draft --cover cover.jpg
+bash skills/md2wechat/scripts/run.sh convert article.md --draft --cover cover.jpg
 ```
 
 ### Natural Language Image Generation
@@ -210,7 +211,7 @@ Read detailed style prompts from [references/themes.md](references/themes.md)
 Call md2wechat CLI:
 
 ```bash
-bash skill/md2wechat/scripts/run.sh convert article.md --mode api
+bash skills/md2wechat/scripts/run.sh convert article.md --mode api
 ```
 
 ### AI Mode
@@ -295,7 +296,7 @@ User: "Make a diagram showing user signup flow"
 
 **I will:**
 1. Create an appropriate prompt based on your description
-2. Call: `bash skill/md2wechat/scripts/run.sh generate_image "prompt"`
+2. Call: `bash skills/md2wechat/scripts/run.sh generate_image "prompt"`
 3. Return the WeChat URL and media ID
 
 **Use when:** You just need an image, not for any article.
@@ -319,7 +320,7 @@ For each image reference in order:
 #### Local Image
 
 ```bash
-bash skill/md2wechat/scripts/run.sh upload_image "/path/to/image.png"
+bash skills/md2wechat/scripts/run.sh upload_image "/path/to/image.png"
 ```
 
 Response:
@@ -330,17 +331,17 @@ Response:
 #### Online Image
 
 ```bash
-bash skill/md2wechat/scripts/run.sh download_and_upload "https://example.com/image.png"
+bash skills/md2wechat/scripts/run.sh download_and_upload "https://example.com/image.png"
 ```
 
 #### AI Generated Image (via CLI)
 
 ```bash
 # Generate with default size (2048x2048 square)
-bash skill/md2wechat/scripts/run.sh generate_image "A cute cat sitting on a windowsill"
+bash skills/md2wechat/scripts/run.sh generate_image "A cute cat sitting on a windowsill"
 
 # Generate with 16:9 ratio for WeChat cover (recommended)
-bash skill/md2wechat/scripts/run.sh generate_image --size 2560x1440 "prompt"
+bash skills/md2wechat/scripts/run.sh generate_image --size 2560x1440 "prompt"
 ```
 
 **WeChat Cover Images**: For article covers, use 16:9 horizontal ratio (2560x1440 recommended) as it displays better in WeChat's feed and article list. Square images (2048x2048) are cropped in preview.
@@ -392,7 +393,7 @@ Display HTML in markdown code block for user to copy.
 Create draft and run:
 
 ```bash
-bash skill/md2wechat/scripts/run.sh convert article.md --draft --cover cover.jpg
+bash skills/md2wechat/scripts/run.sh convert article.md --draft --cover cover.jpg
 ```
 
 **Required for draft**:
@@ -565,7 +566,7 @@ A story about memories...
 **Q: "AppID not configured" error**
 A: Set `WECHAT_APPID` and `WECHAT_SECRET` environment variables, or run:
 ```bash
-bash skill/md2wechat/scripts/run.sh config init
+bash skills/md2wechat/scripts/run.sh config init
 ```
 
 **Q: Config file not working**
@@ -612,10 +613,10 @@ curl ip.sb
 A: Program auto-refreshes tokens. If persists:
 ```bash
 # Check config
-bash skill/md2wechat/scripts/run.sh config show
+bash skills/md2wechat/scripts/run.sh config show
 
 # Re-init if needed
-bash skill/md2wechat/scripts/run.sh config init
+bash skills/md2wechat/scripts/run.sh config init
 ```
 
 **Q: "create draft failed" error**
@@ -644,7 +645,7 @@ A: WeChat has API limits. Wait and retry:
 # Wait 60 seconds
 sleep 60
 # Retry
-bash skill/md2wechat/scripts/run.sh convert article.md --draft
+bash skills/md2wechat/scripts/run.sh convert article.md --draft
 ```
 
 ### HTML/Style Issues
@@ -675,7 +676,7 @@ A: WeChat resets `<p>` color to black. Always specify:
 A: The `run.sh` script will auto-download the binary on first run. If you want to install manually:
 ```bash
 # Use the script - it will handle installation
-bash skill/md2wechat/scripts/run.sh --help
+bash skills/md2wechat/scripts/run.sh --help
 
 # Or download from releases
 # Visit: https://github.com/geekjourneyx/md2wechat-skill/releases
@@ -692,61 +693,61 @@ All commands go through the `run.sh` wrapper, which handles auto-installation:
 
 ```bash
 # Show help
-bash skill/md2wechat/scripts/run.sh --help
+bash skills/md2wechat/scripts/run.sh --help
 
 # Convert and preview
-bash skill/md2wechat/scripts/run.sh convert article.md --preview
+bash skills/md2wechat/scripts/run.sh convert article.md --preview
 
 # Convert with AI theme
-bash skill/md2wechat/scripts/run.sh convert article.md --mode ai --theme autumn-warm --preview
+bash skills/md2wechat/scripts/run.sh convert article.md --mode ai --theme autumn-warm --preview
 
 # Convert and upload to draft
-bash skill/md2wechat/scripts/run.sh convert article.md --draft --cover cover.jpg
+bash skills/md2wechat/scripts/run.sh convert article.md --draft --cover cover.jpg
 
 # Upload single image
-bash skill/md2wechat/scripts/run.sh upload_image photo.jpg
+bash skills/md2wechat/scripts/run.sh upload_image photo.jpg
 
 # Download and upload online image
-bash skill/md2wechat/scripts/run.sh download_and_upload https://example.com/image.jpg
+bash skills/md2wechat/scripts/run.sh download_and_upload https://example.com/image.jpg
 
 # Generate AI image (requires IMAGE_API_KEY)
-bash skill/md2wechat/scripts/run.sh generate_image "A cute cat sitting on a windowsill"
+bash skills/md2wechat/scripts/run.sh generate_image "A cute cat sitting on a windowsill"
 
 # Generate with 16:9 ratio for WeChat cover (recommended)
-bash skill/md2wechat/scripts/run.sh generate_image --size 2560x1440 "prompt"
+bash skills/md2wechat/scripts/run.sh generate_image --size 2560x1440 "prompt"
 
 # Initialize config
-bash skill/md2wechat/scripts/run.sh config init
+bash skills/md2wechat/scripts/run.sh config init
 
 # Show config
-bash skill/md2wechat/scripts/run.sh config show
+bash skills/md2wechat/scripts/run.sh config show
 
 # List available writing styles
-bash skill/md2wechat/scripts/run.sh write --list
+bash skills/md2wechat/scripts/run.sh write --list
 
 # Write with creator style (interactive)
-bash skill/md2wechat/scripts/run.sh write
+bash skills/md2wechat/scripts/run.sh write
 
 # Write with specific style (via stdin/piped)
-echo "你的想法或内容" | bash skill/md2wechat/scripts/run.sh write --style dan-koe
+echo "你的想法或内容" | bash skills/md2wechat/scripts/run.sh write --style dan-koe
 
 # Write with title and heredoc
-bash skill/md2wechat/scripts/run.sh write --style dan-koe --title "文章标题" <<EOF
+bash skills/md2wechat/scripts/run.sh write --style dan-koe --title "文章标题" <<EOF
 你的内容
 EOF
 
 # Write with specific style
-bash skill/md2wechat/scripts/run.sh write --style dan-koe
+bash skills/md2wechat/scripts/run.sh write --style dan-koe
 
 # Generate cover prompt only
-bash skill/md2wechat/scripts/run.sh write --style dan-koe --cover-only
+bash skills/md2wechat/scripts/run.sh write --style dan-koe --cover-only
 
 # Remove AI writing traces (humanize)
-bash skill/md2wechat/scripts/run.sh humanize article.md
+bash skills/md2wechat/scripts/run.sh humanize article.md
 
 # Humanize with intensity
-bash skill/md2wechat/scripts/run.sh humanize article.md --intensity aggressive
+bash skills/md2wechat/scripts/run.sh humanize article.md --intensity aggressive
 
 # Write with humanize
-bash skill/md2wechat/scripts/run.sh write --style dan-koe --humanize
+bash skills/md2wechat/scripts/run.sh write --style dan-koe --humanize
 ```
